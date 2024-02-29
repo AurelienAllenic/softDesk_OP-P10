@@ -15,7 +15,6 @@ class CustomUserDetail(RetrieveUpdateDestroyAPIView):
     def put(self, request, *args, **kwargs):
         instance = self.get_object()
         if 'email' in request.data and instance.email != request.data['email']:
-            # L'email a changé, nous devons vérifier s'il est unique
             try:
                 self.queryset.get(email=request.data['email'])
                 return Response({"email": ["User with this email address already exists."]}, status=status.HTTP_400_BAD_REQUEST)
@@ -23,17 +22,8 @@ class CustomUserDetail(RetrieveUpdateDestroyAPIView):
                 pass
         return super().put(request, *args, **kwargs)
 
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from .models import CustomUser
-from .serializers import CustomUserSerializer, CustomTokenSerializer
-from rest_framework.permissions import IsAuthenticated
-from .permissions import IsSuperuserOrReadOnly
-
 class CustomUserList(APIView):
-    permission_classes = [IsAuthenticated]
+
 
     def get(self, request):
         if not request.user.is_superuser:
