@@ -1,8 +1,7 @@
 from rest_framework import serializers
 from .models import CustomUser
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework import serializers
-from .models import CustomUser
+
 
 class CustomUserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=False)
@@ -16,13 +15,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
-        
         user = CustomUser.objects.create(**validated_data)
 
         if password:
             user.set_password(password)
             user.save()
-        
+
         return user
 
 
